@@ -6,17 +6,62 @@
     <meta name="viewport" content="width=device-width, user-scaleble=no,
     initial-scale=1, maximum-scale=1,minimum-scale=1">
     <link rel="stylesheet" href="Recursos/MisEstilos.css">
+    <script type="text/javascript">
+
+    function validar(){
+      var todo_correcto = true;
+      var msg = "Algunos campos no están correctos, vuelva a revisarlos\n";
+
+      var expresion = /^[a-z][\w.-]+@\w[\w.-]+\.[\w.-]*[a-z][a-z]$/i;
+      var email = document.FormContacto.txtEmail.value;
+      if (!expresion.test(email) && document.getElementById('txtEmail').value.length != 0){
+        msg += "- Email: Dirección válida\n";
+        document.getElementById("txtEmail").value="";
+        todo_correcto = false;
+      }
+
+      if(document.getElementById('txtTelefono').value.length != 0 && 
+         document.getElementById('txtTelefono').value.length != 10){
+        msg += "- Telefono: 10 digitos requeridos\n";
+        document.getElementById("txtTelefono").value="";
+        todo_correcto = false;
+      }
+
+      if(!todo_correcto){
+      alert(msg);
+      }
+
+      return todo_correcto;
+      }
+      function delay(n){
+          return new Promise(function(resolve){
+              setTimeout(resolve,n*1000);
+          });
+      }
+      async function deshabilitar(){
+        var msg2 = "Falta al menos uno de los campos\n";
+        var btn = document.getElementById('btn');
+        if(document.getElementById('txtEmail').value.length == 0 || isNaN(document.getElementById('txtFecha')) || document.getElementById('txtTelefono').value.length == 0){
+          alert(msg2);
+        }else{
+            btn.disabled = true;
+            btn.value = 'Enviando datos ..........';
+            await delay(2);
+            btn.form.submit();
+        }
+      }
+    </script>
   </head>
   <body>
-    <form class="" action="index.html" method="post" name="FormContacto">
+    <form class="" onsubmit="return validar()" method="post" name="FormContacto">
       <h2>Contacto</h2>
       <p>Correo Electronico</p>
-      <input type="text" name="txtEmail" placeholder="&#9993; usuario@mail.com">
+      <input type="text" name="txtEmail" id="txtEmail" placeholder="&#9993; usuario@mail.com" onChange="validar()" required>
       <p>Fecha de Nacimiento</p>
-      <input type="date" name="txtFecha">
+      <input type="date" name="txtFecha" required>
       <p>Teléfono</p>
-      <input type="text" name="txtTelefono" placeholder="&#9742; Telefono">
-      <input type="submit" name="BtnEnviar" value="Enviar">
+      <input type="text" name="txtTelefono" id="txtTelefono" pattern="[0-9]+" placeholder="&#9742; Telefono" onChange="validar()" required>
+       <input type="button" name="BtnEnviar" value="Enviar" id="btn" onclick="deshabilitar()">
     </form>
   </body>
 </html>
